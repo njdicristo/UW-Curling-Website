@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/cache": "^11.13.1",
+    "@mui/material-nextjs": "^6.1.4",
+    "curling-frontend": "file:",
     "next": "^14.2.15",
     "next-auth": "^4.24.8",
     "react": "^18",
