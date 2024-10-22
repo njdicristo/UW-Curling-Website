@@ -2,17 +2,18 @@
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation"
 export default function dashboard() {
-    const { data: session, status } = useSession();
+    const { data: session, status } = useSession({
+      required: true,
+      onUnauthenticated(){
+        redirect('/api/auth/signin?callbackUrl=/dashboard')
+      }
+    })
   
     if (status === 'loading') {
       return <p>Loading...</p>;
     }
-  
-    if (!session) {
-      return (
-        redirect('/api/auth/signin?callbackUrl=/dashboard')
-        
-      );
+    if(session?.user.role !== "admin"){
+      redirect('/denied')
     }
   
     return (
