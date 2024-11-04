@@ -1,0 +1,4 @@
+1. Ability to Create Event Pages
+2. Store and retrieve user data
+3. Make Events able to store user info (who is attending, paid status)
+4. Automatic online payments
