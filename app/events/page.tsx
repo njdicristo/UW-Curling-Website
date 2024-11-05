@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PocketBase from 'pocketbase';
+import CreateEvent from './createEvent/page';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
 async function getEvents() {
@@ -22,6 +23,7 @@ export default async function EventPage() {
                     return <Event key={event.id} event={event} />;
                 })}
             </div>
+            <CreateEvent/>
         </div>
     )
 };
