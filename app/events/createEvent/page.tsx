@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
 import { useState } from 'react';
 export default function CreateEvent() {
     const [name, setName] = useState("");

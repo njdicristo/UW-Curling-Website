@@ -1,3 +1,5 @@
+import EventDetails from './eventDetails';
+
 async function getEvent(id: String){
     const record = await fetch(
         `http://127.0.0.1:8090/api/collections/events/records/${id}`,
@@ -9,14 +11,12 @@ async function getEvent(id: String){
     return data;
 }
 
-export default async function EventPage({params}:any){
+export default async function EventPage({ params }: any) {
     const event = await getEvent(params.id);
 
     return (
         <div>
-            <h1>{event.name}</h1>
-            <div>{event.description}</div>
-            <p>{event.created}</p>
+            <EventDetails event={event} eventId={params.id} />
         </div>
-    )
+    );
 }
