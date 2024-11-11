@@ -29,12 +29,13 @@ export default async function EventPage() {
 };
 
 function Event({ event }: any) {
-    const { id, name, description } = event || {};
+    const { id, name, description, created } = event || {};
     return (
         <Link href={`/events/${id}`}>
             <div>
                 <h2>{name}</h2>
                 <h5>{description}</h5>
+                {/* <p>{created}</p> */}
             </div>
         </Link>
     )

@@ -16,6 +16,7 @@ export default async function EventPage({params}:any){
         <div>
             <h1>{event.name}</h1>
             <div>{event.description}</div>
+            <p>{event.created}</p>
         </div>
     )
 }
