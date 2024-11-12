@@ -36,8 +36,9 @@ const ImageCarousel: React.FC = () => {
       indicators={false} // Hide the indicators
       animation ={"slide"}
       sx={{
-        maxWidth: '1000px', // Set the width of the carousel to fit 2 images of 350px each (350 * 2 = 700)
+        maxWidth: '1025px', // Set the width of the carousel to fit 2 images of 350px each (350 * 2 = 700)
         margin: '0 auto', // Center the carousel
+        maxHeight: '349px'
       }}
     >
       {imagePairs.map((pair, index) => (
@@ -45,7 +46,7 @@ const ImageCarousel: React.FC = () => {
           <Grid container spacing={2}>
             {/* Loop through the pair of images */}
             {pair.map((image, imageIndex) => (
-              <Grid item xs={6} key={imageIndex}>
+              <Grid item xs={12} key={imageIndex} sm={6}>
                 <div
                   style={{
                     width: '500px', // Set the width to 350px for each image
@@ -54,6 +55,7 @@ const ImageCarousel: React.FC = () => {
                     justifyContent: 'center', // Center the image horizontally
                     alignItems: 'center', // Center the image vertically
                     overflow: 'hidden', // Hide overflow if the image exceeds the container
+
                   }}
                 >
                   <img
@@ -64,6 +66,8 @@ const ImageCarousel: React.FC = () => {
                       height: '100%', // Ensure the image stretches to fill the container's height
                       objectFit: 'cover', // Ensures the image covers the entire 350x350 area
                       borderRadius: '15px',
+                      
+                      
                     }}
                   />
                 </div>
