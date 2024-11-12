@@ -68,7 +68,7 @@ const { data: session } = useSession();
     };
   }
   return (
-    <AppBar position="fixed">
+    <AppBar position="absolute">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
@@ -168,7 +168,7 @@ const { data: session } = useSession();
               </Button>
             ))}
             <IconButton aria-label="instagram" onClick={handleCloseNavMenu} color="inherit"> <InstagramIcon ></InstagramIcon></IconButton>
-            <IconButton aria-label="instagram" onClick={handleCloseNavMenu} color="inherit"><VolunteerActivismIcon ></VolunteerActivismIcon></IconButton>
+            <IconButton aria-label="donate" onClick={handleCloseNavMenu} color="inherit"><VolunteerActivismIcon ></VolunteerActivismIcon></IconButton>
              
           </Box>
           <Box sx={{ flexGrow: 0 }}>
