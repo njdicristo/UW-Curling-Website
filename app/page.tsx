@@ -1,9 +1,11 @@
+import ResponsiveAppBar from "@/components/ResponsiveAppBar";
 import { getServerSession } from "next-auth";
 
 export default async function Home() {
   return (
-    <div>
-      <h1>Home</h1>
-    </div>
+    <>
+    <ResponsiveAppBar></ResponsiveAppBar>
+    
+    </>
   );
 }

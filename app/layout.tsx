@@ -20,7 +20,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <SessionProvider>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
-              <NavMenu />
               {children}
             </ThemeProvider>
           </AppRouterCacheProvider>

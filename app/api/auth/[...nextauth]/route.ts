@@ -8,6 +8,7 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_SECRET! ?? "",
     }),
   ],
+  
   callbacks: {
     async jwt({token, user}) {
       if(user) {
