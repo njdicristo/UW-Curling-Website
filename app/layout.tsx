@@ -6,6 +6,7 @@ import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../app/theme';
 import SessionProvider from '@/components/SessionProvider';
+import { CssBaseline } from '@mui/material';
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
   subsets: ['latin'],
@@ -19,7 +20,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <body className={roboto.variable}>
       <SessionProvider>
           <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={theme} >
+            <CssBaseline />
               {children}
             </ThemeProvider>
           </AppRouterCacheProvider>

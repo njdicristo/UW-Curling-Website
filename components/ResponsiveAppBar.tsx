@@ -1,223 +1,100 @@
-'use client';
-import * as React from 'react';
+"use client"
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import { useSession, signIn, signOut } from "next-auth/react"
 import InstagramIcon from '@mui/icons-material/Instagram';
+import Button from '@mui/material/Button';
+import { Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Box } from '@mui/system';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+function Navbar() {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-const pages = ['Home', 'Standings', 'Competitions', 'About', 'Contact'
-];
-const settings = ['Dashboard', 'Logout'];
-
-function ResponsiveAppBar() {
-const { data: session } = useSession();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-  function stringToColor(string: string) {
-    let hash = 0;
-    let i;
-  
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
     }
-  
-    let color = '#';
-  
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-  
-    return color;
-  }
-  
-  function stringAvatar(name: string) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-    };
-  }
+    setDrawerOpen(open);
+  };
+
+  const navLinks = ['Home', 'Events', 'Officers', 'About', 'Contact',];
+
   return (
-    <AppBar position="absolute">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Box
-    component="img" 
+    <AppBar position="absolute"
     sx={{
-     height: 233,
-     width: 350,
-     display: { xs: 'none', md: 'flex' },
-     mr: 2,
-     mt: 1,
-     mb: 1,
-    maxHeight: { xs: 50, md: 50 },
-    maxWidth: { xs: 50, md: 50 },
-  }}
-  alt="Bucky"
-  
-  src='https://github.com/njdicristo/UW-Curling-Website/blob/main/curlingbucky.jpg?raw=true'
-/>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'system-ui',
-              fontWeight: 700,
-              letterSpacing: '0rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
+      backgroundColor: '#B22222',  // Customize background color
+      color: '#ffffff',            // Customize text color
+    }}
+    >
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Logo and Site Name */}
+        <Box display="flex" alignItems="center">
+          <img src="https://github.com/njdicristo/UW-Curling-Website/blob/main/curlingbucky-ai-brush-removebg-9co1clup.png?raw=true" alt="Logo" style={{ height: 40, marginRight: 10 }} />
+          <Typography variant="h6" component="div">
             Curling Club of UW-Madison
           </Typography>
+        </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'system-ui',
-              fontWeight: 700,
-              letterSpacing: '0rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
+        {/* Desktop Links */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          {navLinks.map((text) => (
+            <Button key={text} color="inherit">{text}</Button>
+          ))}
+          <IconButton color="inherit" href="https://instagram.com/curlinguw" target="blank__">
+            <InstagramIcon />
+          </IconButton>
+          <IconButton color="inherit" href="https://account.venmo.com/u/uwcurling" target="blank__">
+          <VolunteerActivismIcon/>
+          </IconButton>
+        </Box>
+
+        {/* Mobile Menu Icon */}
+        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={toggleDrawer(true)}
           >
-            Curling Club of UW-Madison
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ mt: 1, color: 'white', display: 'block', fontWeight: 400}}
-              >
-                {page}
-              </Button>
+            <MenuIcon />
+          </IconButton>
+        </Box>
+      </Toolbar>
+
+      {/* Drawer for Mobile Menu */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+      >
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <List>
+            {navLinks.map((text) => (
+              <ListItemButton key={text}>
+                <ListItemText primary={text} />
+              </ListItemButton>
             ))}
-            <IconButton aria-label="instagram" onClick={handleCloseNavMenu} color="inherit"> <InstagramIcon ></InstagramIcon></IconButton>
-            <IconButton aria-label="donate" onClick={handleCloseNavMenu} color="inherit"><VolunteerActivismIcon ></VolunteerActivismIcon></IconButton>
-             
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-           
-          {session ? (
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar {...stringAvatar(session.user?.name)} />
-                </IconButton>
-              </Tooltip>
-            ) : (
-              <Button variant="outlined" color="inherit" onClick={() => signIn()}>
-                Login
-              </Button>
-            )}
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {session ? (
-                settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => {
-                      handleCloseUserMenu();
-                      if (setting === 'Logout') signOut({ callbackUrl: '/' })
-                    }}
-                  >
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                  </MenuItem>
-                ))
-              ) : null}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
+            <ListItemButton component="a" href="https://instagram.com/curlinguw" target="blank__">
+              <InstagramIcon />
+            
+            </ListItemButton>
+            <ListItemButton component="a" href="https://account.venmo.com/u/uwcurling" target="blank__">
+              <VolunteerActivismIcon/>
+            </ListItemButton>
+          </List>
+        </Box>
+      </Drawer>
+      <Box sx={{ height: '3px', backgroundColor: '#9E1C1C' }} />
     </AppBar>
+    
   );
 }
-export default ResponsiveAppBar;
+
+export default Navbar;
