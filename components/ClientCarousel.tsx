@@ -27,6 +27,7 @@ const ImageCarousel: React.FC = () => {
 
   return (
     <Carousel
+      swipe = {false}
       duration={650}
       autoPlay={true}
       interval={3000}

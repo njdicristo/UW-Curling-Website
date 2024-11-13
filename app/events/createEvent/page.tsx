@@ -2,14 +2,29 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { TextField, Button } from '@mui/material';
+
 export default function CreateEvent() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [eventId, setEventId] = useState(null); // Assuming you have an eventId after creation
+    const [error, setError] = useState(""); // State to track validation errors
 
     const router = useRouter();
 
-    const create = async () => {
-        await fetch('http://127.0.0.1:8090/api/collections/events/records', {
+    const create = async (e) => {
+        e.preventDefault();
+
+        // Check if name or description are empty
+        if (!name.trim() || !description.trim()) {
+            setError("Both fields are required!");
+            return;
+        }
+
+        // Reset error if validation passes
+        setError("");
+
+        const response = await fetch('http://127.0.0.1:8090/api/collections/events/records', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -20,31 +35,47 @@ export default function CreateEvent() {
             }),
         });
 
+        const data = await response.json();
+        setEventId(data.id); // Store the ID of the created event
         setName("");
         setDescription("");
         router.refresh();
-    }
+    };
 
     return (
         <form onSubmit={create}>
             <h3>Create an event</h3>
-            <input
-                type="text"
-                placeholder="Event name"
+            <TextField
+                label="Event Name"
+                variant="outlined"
+                fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                margin="normal"
+                error={!!error}
+                helperText={error && !name.trim() ? error : ""}
             />
-            <div>
-                <textarea
-                    placeholder="Event description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-            </div>
-
-            <button type="submit">
+            <TextField
+                label="Event Description"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                margin="normal"
+                error={!!error}
+                helperText={error && !description.trim() ? error : ""}
+            />
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{ marginTop: '16px' }}
+            >
                 Create event
-            </button>
+            </Button>
         </form>
-    )
+    );
 }

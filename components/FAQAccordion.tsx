@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider';
 
 const FAQAccordion = () => {
   const faqs = [
-    { question: 'Do I need prior curling experience?', answer: 'Absolutely not! Very few of us have curled before joining the club. We will teach you quickly and get you on the road in no time.' },
+    { question: 'Do I need prior curling experience?', answer: 'Absolutely not! We will teach you quickly and get you on the road in no time.' },
     { question: 'Do I need to buy equipment?', answer: 'We have our own club equipment, but encourage interested players to purchase their own gear once they get a hang for the sport.' },
     { question: 'How often do you travel and play games?', answer: 'We attend weekend-long college bonspiels usually once or twice a month once the season ramps up in October. We also compete in one-on-one team match plays that are usually day trips.' },
   ];
