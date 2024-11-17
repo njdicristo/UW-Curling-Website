@@ -4,11 +4,11 @@ import CreateEvent from './createEvent/page';
 import ResponsiveAppBar from '@/components/ResponsiveAppBar';
 import { Box, Stack, Divider, Typography } from '@mui/material';
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
 
 async function getEvents() {
     const res = await fetch(
-        'http://127.0.0.1:8090/api/collections/events/records?page=1&perPage=30',
+        'https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records?page=1&perPage=30',
         { cache: "no-store" }
     );
     const data = await res.json();

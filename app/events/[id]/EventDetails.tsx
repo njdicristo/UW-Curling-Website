@@ -3,11 +3,11 @@
 import { useSession, signIn } from 'next-auth/react';
 import PocketBase from 'pocketbase';
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
 
 const signUp = async (eventID: string, email: string, username: string) => {
     const response = await fetch(
-        `http://127.0.0.1:8090/api/collections/events/records/${eventID}`
+        `https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/${eventID}`
     );
     const event = await response.json();
 

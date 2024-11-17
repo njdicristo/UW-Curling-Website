@@ -1,8 +1,8 @@
-import EventDetails from './eventDetails';
+import EventDetails from './EventDetails';
 
 async function getEvent(id: String){
     const record = await fetch(
-        `http://127.0.0.1:8090/api/collections/events/records/${id}`,
+        `https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/${id}`,
         {
             next: {revalidate:10},
         }
