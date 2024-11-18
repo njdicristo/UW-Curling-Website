@@ -13,7 +13,7 @@ const Footer = () => {
         padding: 2,
         backgroundColor: '#FAF3E0',
         textAlign: 'center',
-        marginTop: 4,
+       
       }}
     >
 

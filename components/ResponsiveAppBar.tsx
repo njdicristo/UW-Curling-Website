@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Image from 'next/image'; // Import Next.js Image component
 import Link from 'next/link';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,9 +9,10 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import Button from '@mui/material/Button';
-import { Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Drawer, List, ListItemButton, ListItemText } from '@mui/material';
 import { Box } from '@mui/system';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import Bucky from '../components/curlingbucky.png';
 
 function Navbar() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -40,22 +42,24 @@ function Navbar() {
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {/* Logo and Site Name */}
-        <Box display="flex" alignItems="center">
-          <img
-            src="https://github.com/njdicristo/UW-Curling-Website/blob/main/curlingbucky-ai-brush-removebg-9co1clup.png?raw=true"
+        <Link href='/' style={{textDecoration: 'none', color: 'white'}}><Box display="flex" alignItems="center">
+          <Image
+            src={Bucky}
             alt="Logo"
-            style={{ height: 50, marginRight: 10 }}
+            height={50}
+            width={50} // Next.js Image requires width and height for optimization
+            style={{ marginRight: 10 }}
           />
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" sx={{fontFamily:'Inter, Arial, sans-serif'}}>
             Curling Club of UW-Madison
           </Typography>
         </Box>
-
+        </Link>
         {/* Desktop Links */}
         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
           {navLinks.map(({ label, path }) => (
             <Link key={label} href={path} passHref>
-              <Button color="inherit" sx={{ color: 'white', mt: .25}}>{label}</Button>
+              <Button color="inherit" sx={{ color: 'white', mt: .25 }}>{label}</Button>
             </Link>
           ))}
           <IconButton color="inherit" href="https://instagram.com/curlinguw" target="blank__">
@@ -85,7 +89,7 @@ function Navbar() {
           <List>
             {navLinks.map(({ label, path }) => (
               <Link key={label} href={path} passHref>
-                <ListItemButton component="a" sx={{ color: 'black' }}>
+                <ListItemButton component="a" sx={{ color: 'black',  textDecoration: 'none'}}>
                   <ListItemText primary={label} />
                 </ListItemButton>
               </Link>

@@ -1,9 +1,10 @@
-"use client"
+"use client";
 import React from "react";
 import { Box, Typography, Button, Stack } from "@mui/material";
 import { styled } from "@mui/system";
 import { signIn } from "next-auth/react";
-
+import Image from "next/image"; // Import Next.js Image component
+import Bucky from '../components/curlingbucky.png';
 // Style for parallax background
 const ParallaxContainer = styled(Box)(({ theme }) => ({
   height: "65vh",
@@ -34,11 +35,11 @@ const Jumbotron = () => {
           overflow: "hidden",
         }}
       >
-        <img
-          src="https://github.com/njdicristo/UW-Curling-Website/blob/main/curlingbucky-ai-brush-removebg-9co1clup.png?raw=true"
+        <Image
+          src= {Bucky}
           alt="Logo"
           width={200}
-          height="auto"
+          height={200} // Set height explicitly for Next.js Image component
           style={{ maxWidth: "100%", objectFit: "contain" }}
         /> {/* Replace with logo URL */}
         

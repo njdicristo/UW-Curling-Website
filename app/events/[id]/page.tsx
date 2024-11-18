@@ -1,4 +1,5 @@
-import EventDetails from './eventDetails';
+import ResponsiveAppBar from '@/components/ResponsiveAppBar';
+import EventDetails from './EventDetails';
 
 async function getEvent(id: String){
     const record = await fetch(
@@ -15,8 +16,8 @@ export default async function EventPage({ params }: any) {
     const event = await getEvent(params.id);
 
     return (
-        <div>
-            <EventDetails event={event} eventId={params.id} />
-        </div>
+
+        <><ResponsiveAppBar></ResponsiveAppBar><EventDetails event={event} eventId={params.id} /></>
+       
     );
 }
