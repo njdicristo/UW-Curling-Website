@@ -23,6 +23,37 @@ const signUp = async (eventID: string, email: string, username: string) => {
     await pb.collection('Events').update(eventID, { users: userData });
     console.log("Signed up successfully!");
 };
+const signOut = async (eventID: string, email: string) => {
+    try {
+        // Fetch the event details
+        const response = await fetch(
+            `https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/${eventID}`
+        );
+        if (!response.ok) {
+            console.error("Failed to fetch event details.");
+            return;
+        }
+        const event = await response.json();
+
+        // Get the current users
+        const userData = event.users || [];
+
+        // Check if the user exists
+        const updatedUsers = userData.filter((user: { email: string }) => user.email !== email);
+
+        if (updatedUsers.length === userData.length) {
+            console.log("User is not signed up for this event.");
+            return;
+        }
+
+        // Update the event in PocketBase with the updated users array
+        await pb.collection('events').update(eventID, { users: updatedUsers });
+        console.log("Signed out successfully!");
+    } catch (error) {
+        console.error("Error signing out:", error);
+    }
+};
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EventDetails({ event, eventId }: { event: any; eventId: string }) {
@@ -33,11 +64,15 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
             <h1>{event.name}</h1>
             <div>{event.description}</div>
             {session ? (
-                <button
+                <><button
                     onClick={() => signUp(eventId, session.user.email, session.user.name)}
                 >
                     Sign up
-                </button>
+                </button><button
+                    onClick={() => signOut(eventId, session.user.email)}
+                >
+                    Remove signed in user from database
+                    </button></>
             ) : (
                 <>
                     Not signed in <br />

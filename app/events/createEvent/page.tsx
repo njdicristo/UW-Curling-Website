@@ -25,7 +25,7 @@ export default function CreateEvent() {
         // Reset error if validation passes
         setError("");
 
-        const response = await fetch('http://127.0.0.1:8090/api/collections/events/records', {
+        const response = await fetch('https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
