@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
-import NavMenu from '@/components/NavMenu';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@mui/material/styles';
@@ -14,6 +13,7 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const session = await getServerSession();
   return (
     <html lang="en">

@@ -7,6 +7,7 @@ import { TextField, Button } from '@mui/material';
 export default function CreateEvent() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [eventId, setEventId] = useState(null); // Assuming you have an eventId after creation
     const [error, setError] = useState(""); // State to track validation errors
 

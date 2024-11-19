@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 import Image from "next/image"; // Import Next.js Image component
 import Bucky from '../components/curlingbucky.png';
 // Style for parallax background
-const ParallaxContainer = styled(Box)(({ theme }) => ({
+const ParallaxContainer = styled(Box)(({ }) => ({
   height: "65vh",
   maxHeight: "65vh", // Limit max height to 65% of the viewport height
   display: "flex",

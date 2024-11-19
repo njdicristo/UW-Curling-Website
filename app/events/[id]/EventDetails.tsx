@@ -12,6 +12,7 @@ const signUp = async (eventID: string, email: string, username: string) => {
     const event = await response.json();
 
     const userData = event.users || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (userData.some((user: any) => user.email === email)) {
         console.log("User already signed up for this event.");
         return;
@@ -23,6 +24,7 @@ const signUp = async (eventID: string, email: string, username: string) => {
     console.log("Signed up successfully!");
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EventDetails({ event, eventId }: { event: any; eventId: string }) {
     const { data: session } = useSession();
 

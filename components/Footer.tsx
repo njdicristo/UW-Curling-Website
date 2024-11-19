@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Divider, Typography, IconButton } from '@mui/material';
-import CurlingIcon from '@mui/icons-material/Sports'; // Placeholder for a curling stone icon
+import { Box, Typography, IconButton } from '@mui/material';
 import type { SVGProps } from 'react';
 
 export function HugeiconsCurling(props: SVGProps<SVGSVGElement>) {

@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import React from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { Box, Stack } from '@mui/material';
@@ -36,7 +36,7 @@ const ImageCarousel: React.FC = () => {
 
   return (
     <Carousel
-   
+
       swipe={false}
       duration={650}
       autoPlay={true}
@@ -52,11 +52,11 @@ const ImageCarousel: React.FC = () => {
       }}
     >
       {imagePairs.map((pair, index) => (
-        <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" key={index} useFlexGap sx={{mr: '15px', ml:'15px'}}>
+        <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" key={index} useFlexGap sx={{ mr: '15px', ml: '15px' }}>
           {pair.map((image, imageIndex) => (
             <Box
               key={imageIndex}
-              
+
               sx={{
                 width: 'auto',  // Keep it flexible for the image size
                 height: { xl: '350px', xs: '200px', sm: '350px' },  // Fixed height
@@ -81,13 +81,13 @@ const ImageCarousel: React.FC = () => {
                   alt={`Carousel Image ${index * 2 + imageIndex + 1}`}
                   width={500}
                   height={350}
-                  
+
                   style={{
                     border: '5px solid #B22222',
                     borderRadius: '15px',
                     objectFit: 'cover',  // Maintain the aspect ratio and cover the area
                     transition: 'transform 0.3s ease-in-out',  // Ensure the transition on the image as well
-                    
+
                   }}
                 />
               )}

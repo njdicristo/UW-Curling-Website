@@ -4,6 +4,7 @@ import CreateEvent from './createEvent/page';
 import ResponsiveAppBar from '@/components/ResponsiveAppBar';
 import { Box, Stack, Divider, Typography } from '@mui/material';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
 
 async function getEvents() {
@@ -12,6 +13,7 @@ async function getEvents() {
         { cache: "no-store" }
     );
     const data = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return data.items as any[];
 }
 
@@ -43,6 +45,7 @@ export default async function EventPage() {
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Event({ event }: any) {
     const { id, name, description } = event || {};
     return (
