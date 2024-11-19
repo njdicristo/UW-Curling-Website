@@ -10,7 +10,7 @@ const pb = new PocketBase('http://127.0.0.1:8090');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const signUp = async () => {
-  await fetch('http://
+  await fetch('http://127.0.0.1:8090/api/collections/events/records')
 
 export default function signUpButton() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
