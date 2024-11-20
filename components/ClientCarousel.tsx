@@ -61,12 +61,13 @@ const ImageCarousel: React.FC = () => {
                 width: 'auto',  // Keep it flexible for the image size
                 height: { xl: '350px', xs: '200px', sm: '350px' },  // Fixed height
                 maxWidth: '500px',  // Fixed max-width for consistency
-                padding: '10px',
+                
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 overflow: 'hidden',
                 borderRadius: '15px',
+                border: '5px solid #B22222',
                 transition: 'transform 0.3s ',  // Smooth transition for the scale effect
                 '&:hover img': {
                   transform: 'scale(1.05)',  // Zoom effect on hover
@@ -83,8 +84,9 @@ const ImageCarousel: React.FC = () => {
                   height={350}
 
                   style={{
-                    border: '5px solid #B22222',
+                    
                     borderRadius: '15px',
+                    
                     objectFit: 'cover',  // Maintain the aspect ratio and cover the area
                     transition: 'transform 0.3s ease-in-out',  // Ensure the transition on the image as well
 

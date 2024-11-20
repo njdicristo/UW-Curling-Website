@@ -13,9 +13,14 @@ const FAQAccordion = () => {
   return (
     <Box 
       sx={{ 
-        width: '50%', 
+        width: {
+          xs: '90%', // Mobile screens
+          sm: '75%', // Small screens
+          md: '50%', // Medium screens and larger
+        }, 
         margin: '0 auto', 
         paddingTop: 5,
+        paddingX: { xs: 2, sm: 4 }, // Add some padding on smaller screens
       }}
     >
         <Typography variant="h5"sx={{ 
@@ -23,7 +28,7 @@ const FAQAccordion = () => {
       }}>
             FAQs
         </Typography>
-        <Divider sx={{mb: 1}}></Divider>
+        <Divider sx={{ mb: 1 }} />
       {faqs.map((faq, index) => (
         <Accordion key={index}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
