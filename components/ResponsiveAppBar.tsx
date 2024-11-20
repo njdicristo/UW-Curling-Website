@@ -122,56 +122,110 @@ function Navbar() {
       </Toolbar>
 
       {/* Drawer for Mobile Menu */}
-      <Drawer
-  anchor="right"
+    {/* Drawer for Mobile Menu */}
+{/* Drawer for Mobile Menu */}
+<Drawer
+  anchor="top"
   open={drawerOpen}
   onClose={toggleDrawer(false)}
   ModalProps={{
     disableScrollLock: true, // Prevents scroll locking
   }}
 >
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
-          
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center", // Centers content horizontally
+      paddingTop: 2, // Adds space at the top
+      textAlign: "center",
+      backgroundColor: "#ffffff", // Optional: background color for clarity
+      width: "100%", // Ensures it spans the drawer width
+    }}
+    role="presentation"
+    onClick={toggleDrawer(false)}
+    onKeyDown={toggleDrawer(false)}
+  >
+    {session ? (
+      // If user is signed in
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: 2,
+        }}
+      >
+        <Avatar
+          alt={session.user?.name || "User"}
+          src={session.user?.name || ""}
+          sx={{ marginRight: 1 }}
+        />
+        <Typography>{session.user?.name || "User"}</Typography>
+      </Box>
+    ) : (
+      // If user is signed out
+      <Box sx={{display: "flex",
+        alignItems: "center",
+        marginBottom: 2, marginRight: 1.5}}>
+        <Button
+          color="inherit"
+          onClick={() => signIn()}
+          sx={{ color: "#B22222", textTransform: "none" }}
         >
-          {session && (
-            <Box sx={{ display: "flex", alignItems: "center", padding: 2 }}>
-              <Avatar
-                alt={session.user?.name || "User"}
-                src={session.user?.name || ""}
-                sx={{ marginRight: 2 }}
-              />
-              <Typography>{session.user?.name || "User"}</Typography>
-            </Box>
-          )}
-          <Divider />
-          <List>
-            {navLinks.map(({ label, path }) => (
-              <Link key={label} href={path} passHref>
-                <ListItemButton component="a" sx={{ color: "black", textDecoration: "none" }}>
-                  <ListItemText primary={label} />
-                </ListItemButton>
-              </Link>
-            ))}
-            <ListItemButton component="a" href="https://instagram.com/curlinguw" target="blank__">
-              <InstagramIcon />
-            </ListItemButton>
-            <ListItemButton component="a" href="https://account.venmo.com/u/uwcurling" target="blank__">
-              <VolunteerActivismIcon />
-            </ListItemButton>
-          </List>
-          {session && (
-            <Box sx={{ textAlign: "center", marginTop: 2 }}>
-              <Button color="inherit" onClick={() => signOut()} sx={{ color: "#B22222" }}>
-                Sign Out
-              </Button>
-            </Box>
-          )}
-        </Box>
-      </Drawer>
+          Sign In
+        </Button>
+      </Box>
+    )}
+    <Divider sx={{ width: "90%", marginBottom: 2 }} />
+    <List>
+      {navLinks.map(({ label, path }) => (
+        <Link key={label} href={path} passHref>
+          <ListItemButton
+            component="a"
+            sx={{
+              color: "black",
+              textDecoration: "none",
+              justifyContent: "center", // Center items within the button
+            }}
+          >
+            <ListItemText primary={label} />
+          </ListItemButton>
+        </Link>
+      ))}
+      <ListItemButton
+        component="a"
+        href="https://instagram.com/curlinguw"
+        target="blank__"
+        sx={{ justifyContent: "center" }}
+      >
+        <InstagramIcon />
+      </ListItemButton>
+      <ListItemButton
+        component="a"
+        href="https://account.venmo.com/u/uwcurling"
+        target="blank__"
+        sx={{ justifyContent: "center" }}
+      >
+        <VolunteerActivismIcon />
+      </ListItemButton>
+    </List>
+    {session && (
+      <Box sx={{ marginTop: .5, mb:.5 }}>
+        <Divider></Divider>
+        <Button
+          color="inherit"
+          onClick={() => signOut()}
+          sx={{ color: "#B22222" }}
+        >
+          Sign Out
+        </Button>
+      </Box>
+    )}
+  </Box>
+</Drawer>
+
+
+
 
       {/* Profile Menu */}
       <Menu

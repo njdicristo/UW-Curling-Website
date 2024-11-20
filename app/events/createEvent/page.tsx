@@ -7,6 +7,7 @@ import { TextField, Button } from '@mui/material';
 export default function CreateEvent() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [capacity, setCapacity] = useState("");
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [eventId, setEventId] = useState(null); // Assuming you have an eventId after creation
     const [error, setError] = useState(""); // State to track validation errors
@@ -32,7 +33,8 @@ export default function CreateEvent() {
             },
             body: JSON.stringify({
                 name,
-                description
+                description,
+                capacity
             }),
         });
 
@@ -40,6 +42,7 @@ export default function CreateEvent() {
         setEventId(data.id); // Store the ID of the created event
         setName("");
         setDescription("");
+        setCapacity("");
         router.refresh();
     };
 
@@ -67,6 +70,18 @@ export default function CreateEvent() {
                 margin="normal"
                 error={!!error}
                 helperText={error && !description.trim() ? error : ""}
+            />
+            <TextField
+                label="Event Capacity"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={1}
+                value={capacity}
+                onChange={(e) => setCapacity(e.target.value)}
+                margin="normal"
+                error={!!error}
+                helperText={error && !capacity.trim() ? error : ""}
             />
             <Button
                 type="submit"

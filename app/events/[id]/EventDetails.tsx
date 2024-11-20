@@ -11,6 +11,13 @@ const signUp = async (eventID: string, email: string, username: string) => {
     );
     const event = await response.json();
 
+    // Check if the event is at capacity
+    const { signedup, capacity } = event;
+    if (signedup >= capacity) {
+        console.log("Event is at full capacity. Cannot sign up.");
+        return;
+    }
+
     const userData = event.users || [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (userData.some((user: any) => user.email === email)) {
@@ -20,9 +27,14 @@ const signUp = async (eventID: string, email: string, username: string) => {
 
     userData.push({ email, username });
 
-    await pb.collection('Events').update(eventID, { users: userData });
+    // Increment the signedup field by 1
+    const updatedSignedUpCount = signedup + 1;
+
+    await pb.collection('Events').update(eventID, { users: userData, signedup: updatedSignedUpCount });
     console.log("Signed up successfully!");
 };
+
+
 const signOut = async (eventID: string, email: string) => {
     try {
         // Fetch the event details
@@ -46,14 +58,16 @@ const signOut = async (eventID: string, email: string) => {
             return;
         }
 
-        // Update the event in PocketBase with the updated users array
-        await pb.collection('events').update(eventID, { users: updatedUsers });
+        // Decrement the signedup field by 1
+        const updatedSignedUpCount = event.signedup > 0 ? event.signedup - 1 : 0;
+
+        // Update the event in PocketBase with the updated users and signedup count
+        await pb.collection('events').update(eventID, { users: updatedUsers, signedup: updatedSignedUpCount });
         console.log("Signed out successfully!");
     } catch (error) {
         console.error("Error signing out:", error);
     }
 };
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EventDetails({ event, eventId }: { event: any; eventId: string }) {
@@ -64,15 +78,18 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
             <h1>{event.name}</h1>
             <div>{event.description}</div>
             {session ? (
-                <><button
-                    onClick={() => signUp(eventId, session.user.email, session.user.name)}
-                >
-                    Sign up
-                </button><button
-                    onClick={() => signOut(eventId, session.user.email)}
-                >
-                    Remove signed in user from database
-                    </button></>
+                <>
+                    <button
+                        onClick={() => signUp(eventId, session.user.email, session.user.name)}
+                    >
+                        Sign up
+                    </button>
+                    <button
+                        onClick={() => signOut(eventId, session.user.email)}
+                    >
+                        Remove signed in user from database
+                    </button>
+                </>
             ) : (
                 <>
                     Not signed in <br />
