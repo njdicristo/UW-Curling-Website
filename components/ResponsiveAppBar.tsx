@@ -161,10 +161,7 @@ function Navbar() {
           sx={{ marginRight: 1 }}
         />
         <Typography>{session.user?.name || "User"}</Typography>
-        
-        
       </Box>
-      
     ) : (
       <Box
         sx={{
@@ -186,11 +183,11 @@ function Navbar() {
     <Divider sx={{ width: "90%", marginBottom: 1 }} />
     <List sx={{
  display: "flex",
- justifyItems: "center",
- flexDirection: "column",
- alignItems: "center", // Centers content horizontally
- paddingTop: 2, // Adds space at the top
- textAlign: "center",
+      justifyItems: "center",
+      flexDirection: "column",
+      alignItems: "center", // Centers content horizontally
+      paddingTop: 2, // Adds space at the top
+      textAlign: "center",
 
 
     }}>

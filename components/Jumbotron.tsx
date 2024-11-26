@@ -23,7 +23,7 @@ const ParallaxContainer = styled(Box)(({ theme }) => ({
   overflow: "hidden", // Prevent overflow
   backgroundAttachment: "fixed", // Default to fixed
   [theme.breakpoints.down("sm")]: {
-    backgroundAttachment: "fixed", // Use 'scroll' for smaller screens
+    backgroundAttachment: "fixed", // Use 'fixed' for smaller screens
   },
 }));
 
@@ -38,6 +38,7 @@ const Jumbotron = () => {
           maxHeight: "100%", // Ensures stack content does not exceed container height
           overflow: "hidden",
           px: { xs: 2, sm: 4 }, // Add padding for small screens
+          pb: { xs: 2, }
         }}
       >
         <Image

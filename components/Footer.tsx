@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography,  } from '@mui/material';
 import type { SVGProps } from 'react';
 
 export function HugeiconsCurling(props: SVGProps<SVGSVGElement>) {
@@ -9,18 +9,16 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        width: '100%',
         padding: 2,
         backgroundColor: '#FAF3E0',
         textAlign: 'center',
-       
+        justifyContent: 'center',
+alignItems: 'center'
       }}
     >
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <IconButton>
-         <HugeiconsCurling color="black" />
-        </IconButton>
+        
         <Typography variant="body2" color="textSecondary">
           &copy; {new Date().getFullYear()} Curling Club of UW-Madison. All Rights Reserved.
         </Typography>
