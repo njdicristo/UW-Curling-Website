@@ -135,6 +135,7 @@ function Navbar() {
   <Box
     sx={{
       display: "flex",
+      justifyItems: "center",
       flexDirection: "column",
       alignItems: "center", // Centers content horizontally
       paddingTop: 2, // Adds space at the top
@@ -147,7 +148,6 @@ function Navbar() {
     onKeyDown={toggleDrawer(false)}
   >
     {session ? (
-      // If user is signed in
       <Box
         sx={{
           display: "flex",
@@ -161,31 +161,48 @@ function Navbar() {
           sx={{ marginRight: 1 }}
         />
         <Typography>{session.user?.name || "User"}</Typography>
+        
+        
       </Box>
+      
     ) : (
-      // If user is signed out
-      <Box sx={{display: "flex",
-        alignItems: "center",
-        marginBottom: 2, marginRight: 1.5}}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: 2,
+        }}
+      >
         <Button
           color="inherit"
           onClick={() => signIn()}
-          sx={{ color: "#B22222", textTransform: "none" }}
+          sx={{ color: "#B22222", textTransform: "none", display: "flex",
+            alignItems: "center",}}
         >
           Sign In
         </Button>
       </Box>
     )}
-    <Divider sx={{ width: "90%", marginBottom: 2 }} />
-    <List>
+    <Divider sx={{ width: "90%", marginBottom: 1 }} />
+    <List sx={{
+ display: "flex",
+ justifyItems: "center",
+ flexDirection: "column",
+ alignItems: "center", // Centers content horizontally
+ paddingTop: 2, // Adds space at the top
+ textAlign: "center",
+
+
+    }}>
       {navLinks.map(({ label, path }) => (
         <Link key={label} href={path} passHref>
           <ListItemButton
             component="a"
             sx={{
+              justifyContent: "center", // Center items within the button
               color: "black",
               textDecoration: "none",
-              justifyContent: "center", // Center items within the button
+              textTransform: "none",
             }}
           >
             <ListItemText primary={label} />
@@ -210,8 +227,8 @@ function Navbar() {
       </ListItemButton>
     </List>
     {session && (
-      <Box sx={{ marginTop: .5, mb:.5 }}>
-        <Divider></Divider>
+      <Box sx={{ marginTop: 0.5, marginBottom: 0.5 }}>
+        <Divider />
         <Button
           color="inherit"
           onClick={() => signOut()}
@@ -223,9 +240,6 @@ function Navbar() {
     )}
   </Box>
 </Drawer>
-
-
-
 
       {/* Profile Menu */}
       <Menu

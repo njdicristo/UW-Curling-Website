@@ -9,6 +9,7 @@ const Footer = () => {
   return (
     <Box
       sx={{
+        width: '100%',
         padding: 2,
         backgroundColor: '#FAF3E0',
         textAlign: 'center',
