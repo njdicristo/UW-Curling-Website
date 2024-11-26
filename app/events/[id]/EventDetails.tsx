@@ -76,6 +76,7 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
     return (
         <div>
             <h1>{event.name}</h1>
+            <h3>{event.signedup}/{event.capacity} people are currently signed up for this event</h3>
             <div>{event.description}</div>
             {session ? (
                 <>
@@ -93,7 +94,7 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
             ) : (
                 <>
                     Not signed in <br />
-                    <button onClick={() => signIn()}>Sign in</button>
+                    <button onClick={() => signIn()}>Sign in to continue</button>
                 </>
             )}
         </div>
