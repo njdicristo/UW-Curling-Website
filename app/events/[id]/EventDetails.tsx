@@ -2,76 +2,109 @@
 
 import { useSession, signIn } from 'next-auth/react';
 import PocketBase from 'pocketbase';
+import { useState, useEffect } from 'react';
 
 const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
 
-const signUp = async (eventID: string, email: string, username: string) => {
+// Fetch event data
+const getEventData = async (eventID: string) => {
     const response = await fetch(
         `https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/${eventID}`
     );
+    if (!response.ok) {
+        throw new Error('Failed to fetch event data');
+    }
     const event = await response.json();
-
-    // Check if the event is at capacity
-    const { signedup, capacity } = event;
-    if (signedup >= capacity) {
-        console.log("Event is at full capacity. Cannot sign up.");
-        return;
-    }
-
-    const userData = event.users || [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (userData.some((user: any) => user.email === email)) {
-        console.log("User already signed up for this event.");
-        return;
-    }
-
-    userData.push({ email, username });
-
-    // Increment the signedup field by 1
-    const updatedSignedUpCount = signedup + 1;
-
-    await pb.collection('Events').update(eventID, { users: userData, signedup: updatedSignedUpCount });
-    console.log("Signed up successfully!");
+    return {
+        users: event.users || [],
+        capacity: event.capacity || 0,
+    };
 };
 
-
-const signOut = async (eventID: string, email: string) => {
-    try {
-        // Fetch the event details
-        const response = await fetch(
-            `https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/${eventID}`
-        );
-        if (!response.ok) {
-            console.error("Failed to fetch event details.");
-            return;
-        }
-        const event = await response.json();
-
-        // Get the current users
-        const userData = event.users || [];
-
-        // Check if the user exists
-        const updatedUsers = userData.filter((user: { email: string }) => user.email !== email);
-
-        if (updatedUsers.length === userData.length) {
-            console.log("User is not signed up for this event.");
-            return;
-        }
-
-        // Decrement the signedup field by 1
-        const updatedSignedUpCount = event.signedup > 0 ? event.signedup - 1 : 0;
-
-        // Update the event in PocketBase with the updated users and signedup count
-        await pb.collection('events').update(eventID, { users: updatedUsers, signedup: updatedSignedUpCount });
-        console.log("Signed out successfully!");
-    } catch (error) {
-        console.error("Error signing out:", error);
-    }
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EventDetails({ event, eventId }: { event: any; eventId: string }) {
     const { data: session } = useSession();
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [isFull, setIsFull] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch event status
+    const fetchEventStatus = async () => {
+        setLoading(true);
+        try {
+            const eventData = await getEventData(eventId);
+
+            if (session) {
+                const userIsRegistered = eventData.users.some(
+                    (user: { email: string }) => user.email === session.user.email
+                );
+                setIsRegistered(userIsRegistered);
+            }
+
+            const eventIsFull = eventData.users.length >= eventData.capacity;
+            setIsFull(eventIsFull);
+        } catch (error) {
+            console.error('Error fetching event status:', error);
+        }
+        setLoading(false);
+    };
+
+    // Handle registration
+    const register = async () => {
+        try {
+            const eventData = await getEventData(eventId);
+
+            if (eventData.users.length >= eventData.capacity) {
+                console.log('Event is at full capacity. Cannot sign up.');
+                return;
+            }
+
+            if (eventData.users.some((user: { email: string }) => user.email === session?.user.email)) {
+                console.log('User already signed up for this event.');
+                return;
+            }
+
+            const updatedUsers = [
+                ...eventData.users,
+                { email: session?.user.email, username: session?.user.name },
+            ];
+
+            await pb.collection('events').update(eventId, { users: updatedUsers });
+            console.log('Signed up successfully!');
+            fetchEventStatus(); // Refresh state
+        } catch (error) {
+            console.error('Error during registration:', error);
+        }
+    };
+
+    // Handle unregistration
+    const unregister = async () => {
+        try {
+            const eventData = await getEventData(eventId);
+
+            const updatedUsers = eventData.users.filter(
+                (user: { email: string }) => user.email !== session?.user.email
+            );
+
+            if (updatedUsers.length === eventData.users.length) {
+                console.log('User is not signed up for this event.');
+                return;
+            }
+
+            await pb.collection('events').update(eventId, { users: updatedUsers });
+            console.log('Signed out successfully!');
+            fetchEventStatus(); // Refresh state
+        } catch (error) {
+            console.error('Error during unregistration:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchEventStatus();
+    }, [eventId, session]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
@@ -80,16 +113,16 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
             <div>{event.description}</div>
             {session ? (
                 <>
-                    <button
-                        onClick={() => signUp(eventId, session.user.email, session.user.name)}
-                    >
-                        Sign up
-                    </button>
-                    <button
-                        onClick={() => signOut(eventId, session.user.email)}
-                    >
-                        Remove signed in user from database
-                    </button>
+                    {isRegistered ? (
+                        <>
+                            <div>You are signed up for this event</div>
+                            <button onClick={unregister}>Cancel registration</button>
+                        </>
+                    ) : isFull ? (
+                        <div>Event is at full capacity</div>
+                    ) : (
+                        <button onClick={register}>Sign up</button>
+                    )}
                 </>
             ) : (
                 <>
