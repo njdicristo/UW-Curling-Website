@@ -47,12 +47,16 @@ export default async function EventPage() {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Event({ event }: any) {
-    const { id, name, description, capacity, signedup } = event || {};
+    const { id, name, description, capacity, users, date } = event || {};
+    const userCount = Array.isArray(users) ? users.length : 0;
+    const formattedDate = new String(date).toString().split(' ')[0]; // Extracts 'YYYY-MM-DD'
+
     return (
         <Link href={`/events/${id}`} passHref >
             <Box sx={{ padding: 2, border: '1px solid #ccc', borderRadius: 2, marginBottom: 2, boxShadow: 2 }}>
                 <Typography variant="h6" >{name}</Typography>
-                <Typography variant="body1" color="info">{signedup}/{capacity}</Typography>
+                <Typography variant="body1" color="info">{formattedDate}</Typography>
+                <Typography variant="body1" color="info">{userCount}/{capacity}</Typography>
                 <Typography variant="body2" color="textSecondary">{description}</Typography>
             </Box>
         </Link>

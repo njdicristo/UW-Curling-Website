@@ -8,6 +8,7 @@ export default function CreateEvent() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [capacity, setCapacity] = useState("");
+    const [date, setDate] = useState("");
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [eventId, setEventId] = useState(null); // Assuming you have an eventId after creation
     const [error, setError] = useState(""); // State to track validation errors
@@ -18,8 +19,8 @@ export default function CreateEvent() {
         e.preventDefault();
 
         // Check if name or description are empty
-        if (!name.trim() || !description.trim()) {
-            setError("Both fields are required!");
+        if (!name.trim() || !description.trim() || !capacity.trim() || !date.trim()) {
+            setError("All fields are required!");
             return;
         }
 
@@ -34,7 +35,8 @@ export default function CreateEvent() {
             body: JSON.stringify({
                 name,
                 description,
-                capacity
+                capacity,
+                date
             }),
         });
 
@@ -43,6 +45,7 @@ export default function CreateEvent() {
         setName("");
         setDescription("");
         setCapacity("");
+        setDate("");
         router.refresh();
     };
 
@@ -82,6 +85,21 @@ export default function CreateEvent() {
                 margin="normal"
                 error={!!error}
                 helperText={error && !capacity.trim() ? error : ""}
+            />
+            <TextField
+                label="Event Date"
+                type="date"
+                variant="outlined"
+                fullWidth
+                value={date}
+                rows={1}
+                onChange={(e) => setDate(e.target.value)}
+                margin="normal"
+                error={!!error}
+                helperText={error && !date.trim() ? error : ""}
+                InputLabelProps={{
+                    shrink: true,
+                  }}
             />
             <Button
                 type="submit"

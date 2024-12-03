@@ -6,6 +6,9 @@ import { useState, useEffect } from 'react';
 
 const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
 
+
+
+
 // Fetch event data
 const getEventData = async (eventID: string) => {
     const response = await fetch(
@@ -26,6 +29,8 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
     const [isRegistered, setIsRegistered] = useState(false);
     const [isFull, setIsFull] = useState(false);
     const [loading, setLoading] = useState(true);
+    const userCount = Array.isArray(event.users) ? event.users.length : 0;
+    const formattedDate = new String(event.date).toString().split(' ')[0]; // Extracts 'YYYY-MM-DD'
 
     // Fetch event status
     const fetchEventStatus = async () => {
@@ -107,9 +112,11 @@ export default function EventDetails({ event, eventId }: { event: any; eventId: 
     }
 
     return (
+        
         <div>
             <h1>{event.name}</h1>
-            <h3>{event.signedup}/{event.capacity} people are currently signed up for this event</h3>
+            <h3>{formattedDate}</h3>
+            <h3>{userCount}/{event.capacity} people are currently signed up for this event</h3>
             <div>{event.description}</div>
             {session ? (
                 <>

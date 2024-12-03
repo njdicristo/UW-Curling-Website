@@ -14,12 +14,14 @@ import { Drawer, List, ListItemButton, ListItemText, Avatar, Menu, MenuItem, Div
 import { Box } from "@mui/system";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import Bucky from "../components/curlingbucky.png";
+import { useRouter } from 'next/navigation';
+
 
 function Navbar() {
   const { data: session } = useSession();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const router = useRouter();
   const toggleDrawer = (open) => (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
@@ -85,33 +87,33 @@ function Navbar() {
 
         {/* Desktop Links */}
         <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
-          {navLinks.map(({ label, path }) => (
-            <Link key={label} href={path} passHref>
-              <Button color="inherit" sx={{ color: "white", mt: 0.25 }}>
-                {label}
-              </Button>
-            </Link>
-          ))}
-          <IconButton color="inherit" href="https://instagram.com/curlinguw" target="blank__">
-            <InstagramIcon />
-          </IconButton>
-          <IconButton color="inherit" href="https://account.venmo.com/u/uwcurling" target="blank__">
-            <VolunteerActivismIcon />
-          </IconButton>
-          {session && (
-            <IconButton
-              onClick={handleAvatarClick}
-              sx={{ ml: 1.5, mr: '2'}}
-            >
-              <Avatar alt={session.user?.name || "User"} src={session.user?.name || ""} />
-            </IconButton>
-          )}
-          {!session && (
-            <Button color="inherit" onClick={() => signIn()} sx={{ ml: 2 }}>
-              Sign In
-            </Button>
-          )}
-        </Box>
+  {navLinks.map(({ label, path }) => (
+    <Button
+      key={label}
+      color="inherit"
+      sx={{ color: "white", mt: 0.25 }}
+      onClick={() => router.push(path)} // Navigate using router.push
+    >
+      {label}
+    </Button>
+  ))}
+  <IconButton color="inherit" href="https://instagram.com/curlinguw" target="blank__">
+    <InstagramIcon />
+  </IconButton>
+  <IconButton color="inherit" href="https://account.venmo.com/u/uwcurling" target="blank__">
+    <VolunteerActivismIcon />
+  </IconButton>
+  {session && (
+    <IconButton onClick={handleAvatarClick} sx={{ ml: 1.5, mr: '2' }}>
+      <Avatar alt={session.user?.name || "User"} src={session.user?.name || ""} />
+    </IconButton>
+  )}
+  {!session && (
+    <Button color="inherit" onClick={() => signIn()} sx={{ ml: 2 }}>
+      Sign In
+    </Button>
+  )}
+</Box>
 
         {/* Mobile Menu Icon */}
         <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -181,48 +183,41 @@ function Navbar() {
       </Box>
     )}
     <Divider sx={{ width: "90%", marginBottom: 1 }} />
-    <List sx={{
- display: "flex",
-      justifyItems: "center",
-      flexDirection: "column",
-      alignItems: "center", // Centers content horizontally
-      paddingTop: 2, // Adds space at the top
-      textAlign: "center",
+    <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 2, textAlign: "center" }}>
+  {navLinks.map(({ label, path }) => (
+    <ListItemButton
+      key={label}
+      onClick={() => {
+        router.push(path); // Navigate using router.push
+        setDrawerOpen(false); // Close the drawer after navigation
+      }}
+      sx={{
+        justifyContent: "center",
+        color: "black",
+        textTransform: "none",
+      }}
+    >
+      <ListItemText primary={label} />
+    </ListItemButton>
+  ))}
+  <ListItemButton
+    component="a"
+    href="https://instagram.com/curlinguw"
+    target="blank__"
+    sx={{ justifyContent: "center" }}
+  >
+    <InstagramIcon />
+  </ListItemButton>
+  <ListItemButton
+    component="a"
+    href="https://account.venmo.com/u/uwcurling"
+    target="blank__"
+    sx={{ justifyContent: "center" }}
+  >
+    <VolunteerActivismIcon />
+  </ListItemButton>
+</List>
 
-
-    }}>
-      {navLinks.map(({ label, path }) => (
-        <Link key={label} href={path} passHref>
-          <ListItemButton
-            component="a"
-            sx={{
-              justifyContent: "center", // Center items within the button
-              color: "black",
-              textDecoration: "none",
-              textTransform: "none",
-            }}
-          >
-            <ListItemText primary={label} />
-          </ListItemButton>
-        </Link>
-      ))}
-      <ListItemButton
-        component="a"
-        href="https://instagram.com/curlinguw"
-        target="blank__"
-        sx={{ justifyContent: "center" }}
-      >
-        <InstagramIcon />
-      </ListItemButton>
-      <ListItemButton
-        component="a"
-        href="https://account.venmo.com/u/uwcurling"
-        target="blank__"
-        sx={{ justifyContent: "center" }}
-      >
-        <VolunteerActivismIcon />
-      </ListItemButton>
-    </List>
     {session && (
       <Box sx={{ marginTop: 0.5, marginBottom: 0.5 }}>
         <Divider />
