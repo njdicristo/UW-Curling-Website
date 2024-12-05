@@ -24,6 +24,7 @@ const getEventData = async (eventID: string) => {
     };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EventDetails({ event, eventId }: { event: any; eventId: string }) {
     const { data: session } = useSession();
     const [isRegistered, setIsRegistered] = useState(false);
