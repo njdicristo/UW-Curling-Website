@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es2017",
     "strictNullChecks": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
