@@ -5,11 +5,11 @@ import ResponsiveAppBar from '@/components/ResponsiveAppBar';
 import { Box, Stack, Divider, Typography } from '@mui/material';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
+const pb = new PocketBase(process.env.POCKETBASE_URL);
 
 async function getEvents() {
-    const res = await fetch(
-        'https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records?page=1&perPage=30',
+    const res = await fetch(process.env.POCKETBASE_URL +
+        '/api/collections/events/records?page=1&perPage=30',
         { cache: "no-store" }
     );
     const data = await res.json();
