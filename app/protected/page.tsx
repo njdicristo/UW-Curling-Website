@@ -9,7 +9,7 @@ export default async function ProtectedRoute(){
 
     return (
         <div>
-            only avaialbe to authenticated users
+            only available to authenticated users
         </div>
     )
 }

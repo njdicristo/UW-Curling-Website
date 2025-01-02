@@ -35,10 +35,6 @@ export default async function EventPage() {
                         ))}
                         
                     </Box>
-                    <Divider />
-                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', padding: 0 }}>
-                    <CreateEvent />
-                    </Box>
                 </Stack>
             </Box>
         </>
