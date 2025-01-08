@@ -1,5 +1,5 @@
 'use client';
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import CreateEvent from "../events/createEvent/page"
 import { useSession } from "next-auth/react"
 

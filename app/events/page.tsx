@@ -1,6 +1,5 @@
 import Link from 'next/link';  
 import PocketBase from 'pocketbase';
-import CreateEvent from './createEvent/page';
 import ResponsiveAppBar from '@/components/ResponsiveAppBar';
 import { Box, Stack, Divider, Typography } from '@mui/material';
 
