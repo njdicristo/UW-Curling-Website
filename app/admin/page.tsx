@@ -3,7 +3,7 @@ import { Box } from "@mui/material"
 import CreateEvent from "../events/createEvent/page"
 import { useSession } from "next-auth/react"
 
-const admin = () => {
+const Admin = () => {
     const { data: session } = useSession();
 
     return (
@@ -15,4 +15,4 @@ const admin = () => {
     )
 }
 
-export default admin;
+export default Admin;

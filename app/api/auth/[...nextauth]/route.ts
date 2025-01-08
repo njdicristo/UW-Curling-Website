@@ -23,6 +23,7 @@ export const authOptions = {
             email: user.email,
             name: user.name,
             role: "user",
+            error: err
           });
 
           const newUser = await pb.collection('users').create({
