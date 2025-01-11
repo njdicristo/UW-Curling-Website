@@ -34,6 +34,7 @@ export async function POST(request) {
             capacity: parseInt(capacity),
             cost: parseFloat(cost),
             date,
+            users:[],
         });
         return new Response(JSON.stringify(response), { status: 200 });
     } catch (error) {

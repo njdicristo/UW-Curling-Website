@@ -1,3 +1,4 @@
+import './globals.css';
 import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
@@ -6,6 +7,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '../app/theme';
 import SessionProvider from '@/components/SessionProvider';
 import { CssBaseline } from '@mui/material';
+
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
   subsets: ['latin'],
@@ -17,6 +19,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const session = await getServerSession();
   return (
     <html lang="en">
+      <script src="https://js.stripe.com/v3/"></script>
       <body className={roboto.variable}>
       <SessionProvider>
           <AppRouterCacheProvider>

@@ -27,21 +27,31 @@ export async function POST(request) {
         return new Response(JSON.stringify({ error: 'Event not found' }), { status: 404 });
     }
     const { capacity, users } = record;
-    console.log("event", record);
-    console.log("Current registrations:", users);
     
     if (users.length >= capacity) {
         return new Response(JSON.stringify({ error: 'Event is at full capacity' }), { status: 400 });
     }
 
     if (users.includes(email)) {
-        console.log("Removing user from registrations");
+        console.log("Removing", email, "from registrations");
         const newUsers = users.filter((user) => user !== email);
-        const response = await pb.collection('events').update(eventID, { users: newUsers });
+        console.log("New users:", newUsers);
+        await pb.collection('events').update(eventID, { users: newUsers });
+        const response = {
+            message: "User successfully unregistered",
+            isRegistered: false,
+        };
         return new Response(JSON.stringify(response), { status: 200 });
     } else {
-        console.log("Adding user to registrations");
-        const response = await pb.collection('events').update(eventID, { users: [...users, email] });
+        if (users.length >= capacity) {
+            return new Response(JSON.stringify({ error: 'Event is at full capacity' }), { status: 400 });
+        }
+        console.log("Adding", email, "to registrations");
+        await pb.collection('events').update(eventID, { users: [...users, email] });
+        const response = {
+            message: "User successfully registered",
+            isRegistered: true,
+        };
         return new Response(JSON.stringify(response), { status: 200 });
     }
 }

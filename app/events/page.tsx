@@ -12,7 +12,6 @@ async function getEvents() {
         { cache: "no-store" }
     );
     const data = await res.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return data.items as any[];
 }
 

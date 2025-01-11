@@ -6,15 +6,26 @@ import { useState, useEffect } from 'react';
 export default function EventDetails({ event, eventID }) {
     const { data: session } = useSession();
     const [isRegistered, setIsRegistered] = useState(false);
-    const [isFull, setIsFull] = useState(event.userCount >= event.capacity);
-    const [userCount, setUserCount] = useState(event.userCount);
+    const [isFull, setIsFull] = useState(false);
     const formattedDate = new Date(event.date).toLocaleDateString();
 
     useEffect(() => {
-        // Check if the user is registered
         if (session) {
-            // Logic to check if the user is already registered
-            // This can be done by fetching the event details and checking if the user is in the list of registered users
+            const checkRegistration = async () => {
+                const res = await fetch(process.env.POCKETBASE_URL +
+                    '/api/collections/events/records?page=1&perPage=30',
+                    { cache: "no-store" }
+                );
+                const data = await res.json();
+                return data.items as any[];
+                if (data.users.includes(session.user.email)) {
+                    setIsRegistered(true);
+                } else {
+                    setIsRegistered(false);
+                }
+            };
+            checkRegistration();
+            setIsFull(event.users?.length||0 >= event.capacity);
         }
     }, [session, eventID]);
 
@@ -30,28 +41,40 @@ export default function EventDetails({ event, eventID }) {
                     eventID,
                 }),
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to change registration');
+            }
+
+            const data = await response.json();
+            setIsRegistered(data.isRegistered);
+            setIsFull(event.users.length >= event.capacity);
         } catch (err) {
             console.error('Failed to change registration:', err);
         }
-    }
+    };
 
     return (
         <div>
-            <h1>{event.name + eventID}</h1>
+            <h1>{event.name}</h1>
             <h3>{formattedDate}</h3>
-            <h3>{userCount}/{event.capacity} people are currently signed up for this event</h3>
             <div>{event.description}</div>
             {session ? (
                 <>
-                    {isRegistered ? (
+                    {(isRegistered ? (
                         <>
                             <div>You are signed up for this event</div>
-                            <button onClick={()=>changeRegistration(session.user.email,eventID)}>Cancel registration</button>
+                            <button onClick={() => changeRegistration(session.user.email, eventID)}>Cancel</button>
                         </>
                     ) : isFull ? (
-                        <div>Event is at full capacity</div>
+                        <div className='text-red-500'>This Event is at full capacity</div>
                     ) : (
-                        <button onClick={()=>changeRegistration(session.user.email,eventID)}>Sign up</button>
+                        <>
+                            <div>{event.users?.length||0} / {event.capacity||0} users registered</div>
+                            <div>You are not signed up for this event</div>
+                            <button onClick={() => changeRegistration(session.user.email, eventID)}>Sign up</button>
+                        </>
+                    )
                     )}
                 </>
             ) : (
