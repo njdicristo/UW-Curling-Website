@@ -3,7 +3,7 @@
 import { useSession, signIn } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
-export default function EventDetails({ event, eventId }) {
+export default function EventDetails({ event, eventID }) {
     const { data: session } = useSession();
     const [isRegistered, setIsRegistered] = useState(false);
     const [isFull, setIsFull] = useState(event.userCount >= event.capacity);
@@ -16,63 +16,28 @@ export default function EventDetails({ event, eventId }) {
             // Logic to check if the user is already registered
             // This can be done by fetching the event details and checking if the user is in the list of registered users
         }
-    }, [session, eventId]);
+    }, [session, eventID]);
 
-    const register = async () => {
-        if (!session) return;
-
+    const changeRegistration = async (email, eventID) => {
         try {
-            const response = await fetch('/api/events/register', {
+            const response = await fetch('/api/changeRegistration', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    eventId,
-                    userId: session.user.id,
+                    email,
+                    eventID,
                 }),
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to register for event');
-            }
-
-            setIsRegistered(true);
-            setUserCount(userCount + 1);
         } catch (err) {
-            console.error('Failed to register for event:', err);
+            console.error('Failed to change registration:', err);
         }
-    };
-
-    const unregister = async () => {
-        if (!session) return;
-
-        try {
-            const response = await fetch('/api/events/unregister', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    eventId,
-                    userId: session.user.id,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to unregister from event');
-            }
-
-            setIsRegistered(false);
-            setUserCount(userCount - 1);
-        } catch (err) {
-            console.error('Failed to unregister from event:', err);
-        }
-    };
+    }
 
     return (
         <div>
-            <h1>{event.name}</h1>
+            <h1>{event.name + eventID}</h1>
             <h3>{formattedDate}</h3>
             <h3>{userCount}/{event.capacity} people are currently signed up for this event</h3>
             <div>{event.description}</div>
@@ -81,12 +46,12 @@ export default function EventDetails({ event, eventId }) {
                     {isRegistered ? (
                         <>
                             <div>You are signed up for this event</div>
-                            <button onClick={unregister}>Cancel registration</button>
+                            <button onClick={()=>changeRegistration(session.user.email,eventID)}>Cancel registration</button>
                         </>
                     ) : isFull ? (
                         <div>Event is at full capacity</div>
                     ) : (
-                        <button onClick={register}>Sign up</button>
+                        <button onClick={()=>changeRegistration(session.user.email,eventID)}>Sign up</button>
                     )}
                 </>
             ) : (

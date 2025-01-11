@@ -32,11 +32,6 @@ export default function CreateEvent() {
                     date
                 }),
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to create event');
-            }
-
             const event = await response.json();
 
             const router = useRouter();

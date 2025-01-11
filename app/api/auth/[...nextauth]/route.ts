@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import {pb, authenticatePocketBase} from '@/src/lib/pb';
+import { pb, authenticatePocketBase } from '@/src/lib/pb';
 
 export const authOptions = {
   providers: [
@@ -28,20 +28,19 @@ export const authOptions = {
             error: err
           });
 
-          const newUser = await pb.collection('users').create({
-            username: "user",
-            password: "abc1234567",
-            passwordConfirm: "abc1234567",
+          const newUser = await pb.collection("users").create({
             email: user.email,
             name: user.name,
             role: "user",
+            password: "password123",
+            passwordConfirm: "password123",
           });
-          token = newUser.token;
         }
       }
       return token
     },
     async session({ session, token }) {
+      console.log("Signing in user:", session.user.email);
       if (token.role) {
         session.user.role = token.role;
       }

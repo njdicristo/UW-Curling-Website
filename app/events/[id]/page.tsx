@@ -19,7 +19,7 @@ export default async function EventPage({ params }: any) {
     return (
         <>
             <ResponsiveAppBar />
-            <EventDetails event={event} eventId={params.id} />
+            <EventDetails event={event} eventID={params.id} />
         </>
     );
 }
