@@ -19,7 +19,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const session = await getServerSession();
   return (
     <html lang="en">
-      <script src="https://js.stripe.com/v3/"></script>
       <body className={roboto.variable}>
       <SessionProvider>
           <AppRouterCacheProvider>
