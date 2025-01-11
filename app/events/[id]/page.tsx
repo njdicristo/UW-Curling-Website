@@ -7,7 +7,7 @@ async function getEvent(id: string){
         {
             next: {revalidate:10},
         }
-    )
+    );
     const data = await record.json();
     return data;
 }
@@ -17,8 +17,9 @@ export default async function EventPage({ params }: any) {
     const event = await getEvent(params.id);
 
     return (
-
-        <><ResponsiveAppBar></ResponsiveAppBar><EventDetails event={event} eventId={params.id} /></>
-       
+        <>
+            <ResponsiveAppBar />
+            <EventDetails event={event} eventId={params.id} />
+        </>
     );
 }

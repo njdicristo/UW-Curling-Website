@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import pb from '@/src/lib/pb';
+import {pb, authenticatePocketBase} from '@/src/lib/pb';
 
 export const authOptions = {
   providers: [
@@ -15,9 +15,11 @@ export const authOptions = {
       if (user) {
         const email = user.email;
 
+        await authenticatePocketBase();
+
         try { //check if user exists
           const existingUser = await pb.collection("users").getFirstListItem(`email="${email}"`);
-          token.role = existingUser?.role || "user";
+          token.role = existingUser.role || "user";
         } catch (err) { //user doesn't exist
           console.log("Creating user in PocketBase:", {
             email: user.email,
@@ -40,9 +42,8 @@ export const authOptions = {
       return token
     },
     async session({ session, token }) {
-
-      if (session?.user) {
-        session.user.role = token.role
+      if (token.role) {
+        session.user.role = token.role;
       }
       return session
     }

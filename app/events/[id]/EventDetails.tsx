@@ -1,119 +1,76 @@
 'use client';
 
 import { useSession, signIn } from 'next-auth/react';
-import PocketBase from 'pocketbase';
 import { useState, useEffect } from 'react';
 
-const pb = new PocketBase('https://pocketbase-docker-billowing-pine-9885.fly.dev');
-
-
-
-
-// Fetch event data
-const getEventData = async (eventID: string) => {
-    const response = await fetch(
-        `https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/${eventID}`
-    );
-    if (!response.ok) {
-        throw new Error('Failed to fetch event data');
-    }
-    const event = await response.json();
-    return {
-        users: event.users || [],
-        capacity: event.capacity || 0,
-    };
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function EventDetails({ event, eventId }: { event: any; eventId: string }) {
+export default function EventDetails({ event, eventId }) {
     const { data: session } = useSession();
     const [isRegistered, setIsRegistered] = useState(false);
-    const [isFull, setIsFull] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const userCount = Array.isArray(event.users) ? event.users.length : 0;
-    const formattedDate = new String(event.date).toString().split(' ')[0]; // Extracts 'YYYY-MM-DD'
-
-    // Fetch event status
-    const fetchEventStatus = async () => {
-        setLoading(true);
-        try {
-            const eventData = await getEventData(eventId);
-
-            if (session) {
-                const userIsRegistered = eventData.users.some(
-                    (user: { email: string }) => user.email === session.user.email
-                );
-                setIsRegistered(userIsRegistered);
-            }
-
-            const eventIsFull = eventData.users.length >= eventData.capacity;
-            setIsFull(eventIsFull);
-        } catch (error) {
-            console.error('Error fetching event status:', error);
-        }
-        setLoading(false);
-    };
-
-    // Handle registration
-    const register = async () => {
-        try {
-            const eventData = await getEventData(eventId);
-
-            if (eventData.users.length >= eventData.capacity) {
-                console.log('Event is at full capacity. Cannot sign up.');
-                return;
-            }
-
-            if (eventData.users.some((user: { email: string }) => user.email === session?.user.email)) {
-                console.log('User already signed up for this event.');
-                return;
-            }
-
-            const updatedUsers = [
-                ...eventData.users,
-                { email: session?.user.email, username: session?.user.name },
-            ];
-
-            await pb.collection('events').update(eventId, { users: updatedUsers });
-            console.log('Signed up successfully!');
-            fetchEventStatus(); // Refresh state
-        } catch (error) {
-            console.error('Error during registration:', error);
-        }
-    };
-
-    // Handle unregistration
-    const unregister = async () => {
-        try {
-            const eventData = await getEventData(eventId);
-
-            const updatedUsers = eventData.users.filter(
-                (user: { email: string }) => user.email !== session?.user.email
-            );
-
-            if (updatedUsers.length === eventData.users.length) {
-                console.log('User is not signed up for this event.');
-                return;
-            }
-
-            await pb.collection('events').update(eventId, { users: updatedUsers });
-            console.log('Signed out successfully!');
-            fetchEventStatus(); // Refresh state
-        } catch (error) {
-            console.error('Error during unregistration:', error);
-        }
-    };
+    const [isFull, setIsFull] = useState(event.userCount >= event.capacity);
+    const [userCount, setUserCount] = useState(event.userCount);
+    const formattedDate = new Date(event.date).toLocaleDateString();
 
     useEffect(() => {
-        fetchEventStatus();
-    }, [eventId, session]);
+        // Check if the user is registered
+        if (session) {
+            // Logic to check if the user is already registered
+            // This can be done by fetching the event details and checking if the user is in the list of registered users
+        }
+    }, [session, eventId]);
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const register = async () => {
+        if (!session) return;
+
+        try {
+            const response = await fetch('/api/events/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    eventId,
+                    userId: session.user.id,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to register for event');
+            }
+
+            setIsRegistered(true);
+            setUserCount(userCount + 1);
+        } catch (err) {
+            console.error('Failed to register for event:', err);
+        }
+    };
+
+    const unregister = async () => {
+        if (!session) return;
+
+        try {
+            const response = await fetch('/api/events/unregister', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    eventId,
+                    userId: session.user.id,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to unregister from event');
+            }
+
+            setIsRegistered(false);
+            setUserCount(userCount - 1);
+        } catch (err) {
+            console.error('Failed to unregister from event:', err);
+        }
+    };
 
     return (
-        
         <div>
             <h1>{event.name}</h1>
             <h3>{formattedDate}</h3>

@@ -8,49 +8,53 @@ export default function CreateEvent() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [capacity, setCapacity] = useState("");
+    const [cost, setCost] = useState("0");
     const [date, setDate] = useState("");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [eventId, setEventId] = useState(null); // Assuming you have an eventId after creation
-    const [error, setError] = useState(""); // State to track validation errors
+    const [error, setError] = useState("");
 
-    const router = useRouter();
-
-    const create = async (e) => {
+    const createEvent = async (e) => {
         e.preventDefault();
-
-        // Check if name or description are empty
-        if (!name.trim() || !description.trim() || !capacity.trim() || !date.trim()) {
+        if (!name.trim() || !description.trim() || !capacity.trim() || !cost.trim() || !date.trim()) {
             setError("All fields are required!");
             return;
         }
+        try {
+            const response = await fetch('/api/createEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    description,
+                    capacity,
+                    cost,
+                    date
+                }),
+            });
 
-        // Reset error if validation passes
-        setError("");
+            if (!response.ok) {
+                throw new Error('Failed to create event');
+            }
 
-        const response = await fetch('https://pocketbase-docker-billowing-pine-9885.fly.dev/api/collections/events/records/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                description,
-                capacity,
-                date
-            }),
-        });
+            const event = await response.json();
 
-        const data = await response.json();
-        setEventId(data.id); // Store the ID of the created event
+            const router = useRouter();
+            router.refresh();
+            console.log('Event created:', event);
+        } catch (err) {
+            console.error('Failed to create event:', err);
+            setError(err.message || 'An error occurred');
+        }
         setName("");
         setDescription("");
         setCapacity("");
+        setCost("0");
         setDate("");
-        router.refresh();
     };
 
     return (
-        <form onSubmit={create}>
+        <form onSubmit={createEvent}>
             <h3>Create an event</h3>
             <TextField
                 label="Event Name"
@@ -87,6 +91,18 @@ export default function CreateEvent() {
                 helperText={error && !capacity.trim() ? error : ""}
             />
             <TextField
+                label="Event Cost"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={1}
+                value={cost}
+                onChange={(e) => setCost(e.target.value)}
+                margin="normal"
+                error={!!error}
+                helperText={error && !cost.trim() ? error : ""}
+            />
+            <TextField
                 label="Event Date"
                 type="date"
                 variant="outlined"
@@ -99,7 +115,7 @@ export default function CreateEvent() {
                 helperText={error && !date.trim() ? error : ""}
                 InputLabelProps={{
                     shrink: true,
-                  }}
+                }}
             />
             <Button
                 type="submit"
