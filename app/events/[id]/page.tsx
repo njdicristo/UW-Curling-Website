@@ -18,6 +18,8 @@ async function getEvent(id: string) {
 }
 
 export default function EventPage({ params }: any) {
+    const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_TEST_KEY || '');
+
     const [event, setEvent] = useState<any>(null);
     const { data: session } = useSession();
     const [isRegistered, setIsRegistered] = useState(false);
@@ -34,24 +36,6 @@ export default function EventPage({ params }: any) {
         }
         fetchEvent();
     }, [params.id]);
-
-    useEffect(() => {
-        if (session && event) {
-            const checkRegistration = async () => {
-                const res = await fetch(process.env.POCKETBASE_URL + '/api/collections/events/records?page=1&perPage=30', {
-                    cache: 'no-store',
-                });
-                const data = await res.json();
-                if (data.items.some((item: any) => item.users.includes(session.user.email))) {
-                    setIsRegistered(true);
-                } else {
-                    setIsRegistered(false);
-                }
-            };
-            checkRegistration();
-            setIsFull(event.users?.length || 0 >= event.capacity);
-        }
-    }, [session, event]);
 
     const changeRegistration = async (email: string, eventID: string) => {
         try {
@@ -159,7 +143,7 @@ export default function EventPage({ params }: any) {
                         )}
 
                         {clientSecret && !isRegistered && !isFull && (
-                            <Elements stripe={loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')}>
+                            <Elements stripe={stripePromise}>
                                 <div>
                                     <CardElement />
                                     <button
