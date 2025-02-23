@@ -26,11 +26,8 @@ export async function POST(request) {
     if (!record) {
         return new Response(JSON.stringify({ error: 'Event not found' }), { status: 404 });
     }
-    const { capacity, users } = record;
-    
-    if (users.length >= capacity) {
-        return new Response(JSON.stringify({ error: 'Event is at full capacity' }), { status: 400 });
-    }
+    let { capacity, users } = record;
+    users = users || [];
 
     if (users.includes(email)) {
         console.log("Removing", email, "from registrations");

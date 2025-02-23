@@ -8,7 +8,7 @@ const pb = new PocketBase(process.env.POCKETBASE_URL);
 
 async function getEvents() {
     const res = await fetch(process.env.POCKETBASE_URL +
-        '/api/collections/events/records?page=1&perPage=30',
+        '/api/collections/events/records?page=1&perPage=30&sort=-created',
         { cache: "no-store" }
     );
     const data = await res.json();

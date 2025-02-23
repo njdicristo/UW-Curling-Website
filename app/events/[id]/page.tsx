@@ -1,10 +1,10 @@
 'use client';
 
 import ResponsiveAppBar from '@/components/ResponsiveAppBar';
+import { EmbeddedCheckout } from '@stripe/react-stripe-js';
 import { useSession, signIn } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import EmbeddedCheckoutButton from '@/components/EmbeddedCheckoutButton';
 
 async function getEvent(id: string) {
     const record = await fetch(
@@ -18,21 +18,18 @@ async function getEvent(id: string) {
 }
 
 export default function EventPage({ params }: any) {
-    const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_TEST_KEY || '');
-
     const [event, setEvent] = useState<any>(null);
     const { data: session } = useSession();
     const [isRegistered, setIsRegistered] = useState(false);
     const [isFull, setIsFull] = useState(false);
     const formattedDate = event ? new Date(event.date).toLocaleDateString() : '';
 
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
-    const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-
+    //gets event data on page load
     useEffect(() => {
         async function fetchEvent() {
             const eventData = await getEvent(params.id);
             setEvent(eventData);
+            console.log(eventData);
         }
         fetchEvent();
     }, [params.id]);
@@ -62,49 +59,6 @@ export default function EventPage({ params }: any) {
         }
     };
 
-    const handlePayment = async (stripe: any, elements: any) => {
-        if (!stripe || !elements) {
-            return;
-        }
-
-        setIsPaymentProcessing(true);
-
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret || '', {
-            payment_method: {
-                card: elements.getElement(CardElement),
-            },
-        });
-
-        if (error) {
-            console.error('Payment failed:', error);
-            setIsPaymentProcessing(false);
-        } else if (paymentIntent?.status === 'succeeded') {
-            setIsPaymentProcessing(false);
-            console.log('Payment succeeded');
-            await changeRegistration(session.user.email, event.id);
-        }
-    };
-
-    const startPaymentFlow = async () => {
-        if (event && event.cost > 0) {
-            const res = await fetch('/api/create-payment-intent', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    amount: event.cost * 100, // cost in cents
-                    eventID: event.id,
-                }),
-            });
-
-            const { clientSecret } = await res.json();
-            setClientSecret(clientSecret);
-        } else {
-            await changeRegistration(session.user.email, event.id);
-        }
-    };
-
     return (
         <>
             <ResponsiveAppBar />
@@ -128,10 +82,15 @@ export default function EventPage({ params }: any) {
                                     <div className="text-red-500">This Event is at full capacity</div>
                                 ) : (
                                     <>
-                                        {event.cost > 0 && <>Cost: ${event.cost}</>}
+                                        {(event.cost != 0) && (
+                                            <EmbeddedCheckoutButton
+                                                eventId={params.id}
+                                                userEmail={session.user.email}
+                                            />)
+
+                                        }
                                         <div>{event.users?.length || 0} / {event.capacity || 0} users registered</div>
                                         <div>You are not signed up for this event</div>
-                                        <button onClick={startPaymentFlow}>Sign up</button>
                                     </>
                                 )}
                             </>
@@ -140,22 +99,6 @@ export default function EventPage({ params }: any) {
                                 Not signed in <br />
                                 <button onClick={() => signIn()}>Sign in to continue</button>
                             </>
-                        )}
-
-                        {clientSecret && !isRegistered && !isFull && (
-                            <Elements stripe={stripePromise}>
-                                <div>
-                                    <CardElement />
-                                    <button
-                                        onClick={(e) =>
-                                            handlePayment(useStripe(), useElements())
-                                        }
-                                        disabled={isPaymentProcessing}
-                                    >
-                                        {isPaymentProcessing ? 'Processing...' : 'Pay Now'}
-                                    </button>
-                                </div>
-                            </Elements>
                         )}
                     </>
                 ) : (

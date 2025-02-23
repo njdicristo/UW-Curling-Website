@@ -1,26 +1,28 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { pb, authenticatePocketBase } from '@/src/lib/pb';
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID! ?? "",
-      clientSecret: process.env.GOOGLE_SECRET! ?? "",
+      clientId: process.env.GOOGLE_ID || "",
+      clientSecret: process.env.GOOGLE_SECRET || "",
     }),
   ],
+
+  session: {
+    strategy: "jwt",
+  },
 
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         const email = user.email;
-
-        await authenticatePocketBase();
-
-        try { //check if user exists
+        try {
+          await authenticatePocketBase();
           const existingUser = await pb.collection("users").getFirstListItem(`email="${email}"`);
           token.role = existingUser.role || "user";
-        } catch (err) { //user doesn't exist
+        } catch (err) {
           console.log("Creating user in PocketBase:", {
             email: user.email,
             name: user.name,
@@ -28,7 +30,8 @@ export const authOptions = {
             error: err
           });
 
-          const newUser = await pb.collection("users").create({
+          await authenticatePocketBase(); // Authenticate only if needed
+          await pb.collection("users").create({
             email: user.email,
             name: user.name,
             role: "user",
@@ -37,16 +40,18 @@ export const authOptions = {
           });
         }
       }
-      return token
+      return token;
     },
+
     async session({ session, token }) {
-      console.log("Signing in user:", session.user.email);
+      console.log("Signing in user:", session?.user?.email || "Unknown User");
       if (token.role) {
         session.user.role = token.role;
       }
-      return session
+      return session;
     }
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 };
 
