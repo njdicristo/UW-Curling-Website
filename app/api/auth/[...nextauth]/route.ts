@@ -2,6 +2,30 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { pb, authenticatePocketBase } from '@/src/lib/pb';
 
+async function findOrCreateUser(email: string, name: string) {
+  await authenticatePocketBase();
+
+  try {
+    const existingUser = await pb.collection("users").getFirstListItem(`email="${email}"`);
+    return existingUser;
+  } catch (err) {
+    console.log("Creating user in PocketBase:", { email, name });
+
+    const newUser = await pb.collection("users").create({
+      email,
+      name,
+      role: "user",
+      membership: false,
+      practices_left: 2,
+      password: "Password123", // Generate a random password
+      passwordConfirm: "Password123",
+    });
+
+    console.log("User created in PocketBase:", newUser);
+    return newUser;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -17,27 +41,10 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const email = user.email;
-        try {
-          await authenticatePocketBase();
-          const existingUser = await pb.collection("users").getFirstListItem(`email="${email}"`);
+        const { email, name } = user;
+        if (email && name) {
+          const existingUser = await findOrCreateUser(email, name);
           token.role = existingUser.role || "user";
-        } catch (err) {
-          console.log("Creating user in PocketBase:", {
-            email: user.email,
-            name: user.name,
-            role: "user",
-            error: err
-          });
-
-          await authenticatePocketBase(); // Authenticate only if needed
-          await pb.collection("users").create({
-            email: user.email,
-            name: user.name,
-            role: "user",
-            password: "password123",
-            passwordConfirm: "password123",
-          });
         }
       }
       return token;
@@ -49,7 +56,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role;
       }
       return session;
-    }
+    },
   },
 
   secret: process.env.NEXTAUTH_SECRET,
